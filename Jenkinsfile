@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/YOUR_USERNAME/COMP367-MavenApp.git'
+                git 'https://github.com/sarahshields77/COMP367Lab2Jenkins.git'
             }
         }
         stage('Build') {

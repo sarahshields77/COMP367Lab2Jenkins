@@ -3,7 +3,8 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/sarahshields77/COMP367Lab2Jenkins.git'
+                git branch: 'main', url: 'https://github.com/sarahshields77/COMP367Lab2Jenkins.git'
+
             }
         }
         stage('Build') {

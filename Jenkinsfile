@@ -1,5 +1,11 @@
 pipeline {
     agent any
+
+    environment {
+        DOCKER_IMAGE = "sarahshields77/comp367-webapp"
+        DOCKER_CREDENTIALS_ID = "docker-hub-credentials"
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -7,19 +13,27 @@ pipeline {
 
             }
         }
-        stage('Build') {
+        stage('Build Maven Project') {
             steps {
                 sh 'mvn clean package'
             }
         }
-        stage('Test') {
+        stage('Docker Login') {
             steps {
-                sh 'mvn test'
+                withCredentials([usernamePassword(credentialsId: DOCKER_CREDENTIALS_ID, usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
+                }
             }
         }
-        stage('Archive') {
+        stage('Docker Build') {
             steps {
-                archiveArtifacts artifacts: 'target/*.war', fingerprint: true
+                sh 'docker build -t $DOCKER_IMAGE .'
+            }
+        }
+
+        stage('Docker Push') {
+            steps {
+                sh 'docker push $DOCKER_IMAGE'
             }
         }
     }
